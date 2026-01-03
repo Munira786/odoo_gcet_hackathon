@@ -9,37 +9,48 @@ function Login() {
     // simulate successful login
     login({ name: "Admin", role: "Admin" });
 
-    // redirect to dashboard
-    navigate("/dashboard");
+    // redirect to employee dashboard
+    navigate("/employees");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-300">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+      <div className="w-full max-w-md bg-white border-2 border-gray-800 rounded-lg p-8">
 
-        <h1 className="text-3xl font-bold text-center text-slate-800 mb-2">
-          HRMS Login
-        </h1>
-        <p className="text-center text-slate-500 mb-6">
-          Sign in to continue
-        </p>
+        <div className="w-full h-20 flex items-center justify-center mb-6">
+          <img 
+            src="/management.png" 
+            alt="App Logo" 
+            className="h-20 w-auto"
+          />
+        </div>
 
-        <input
-          className="w-full border p-2 mb-3 rounded"
-          placeholder="Email"
-        />
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Login Id/Email:
+          </label>
+          <input
+            className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+            placeholder="Enter your login ID or email"
+          />
+        </div>
 
-        <input
-          type="password"
-          className="w-full border p-2 mb-4 rounded"
-          placeholder="Password"
-        />
+        <div className="mb-6">
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Password:
+          </label>
+          <input
+            type="password"
+            className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+            placeholder="Enter your password"
+          />
+        </div>
 
         <button
           onClick={handleLogin}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700"
+          className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
         >
-          Sign In
+          SIGN IN
         </button>
 
       </div>

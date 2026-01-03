@@ -1,9 +1,17 @@
 <?php
+session_start();
 include_once '../../config/database.php';
-header("Access-Control-Allow-Origin: *");
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 $database = new Database();
 $db = $database->getConnection();
@@ -11,7 +19,7 @@ $db = $database->getConnection();
 $data = json_decode(file_get_contents("php://input"));
 
 // Ideally check role here, assumed handled by frontend + backend token verification middleware
-if(!isset($data->employee_id) || !isset($data->basic_salary)) {
+if (!isset($data->employee_id) || !isset($data->basic_salary)) {
     http_response_code(400);
     echo json_encode(["message" => "Incomplete data."]);
     exit();
@@ -33,7 +41,7 @@ $stmt_check = $db->prepare($check);
 $stmt_check->bindParam(":eid", $data->employee_id);
 $stmt_check->execute();
 
-if($stmt_check->rowCount() > 0) {
+if ($stmt_check->rowCount() > 0) {
     // Update
     $query = "UPDATE salary_details SET 
                 basic_salary = :basic, hra = :hra, allowances = :allow, 
@@ -74,7 +82,7 @@ $stmt->bindParam(":ifsc", $ifsc);
 $stmt->bindParam(":pan", $pan);
 $stmt->bindParam(":uan", $uan);
 
-if($stmt->execute()) {
+if ($stmt->execute()) {
     echo json_encode(["message" => "Salary details updated.", "net_salary" => $net_salary]);
 } else {
     http_response_code(503);

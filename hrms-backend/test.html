@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS API Tester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .endpoint-group {
+            margin-bottom: 30px;
+        }
+
+        .endpoint-group h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .endpoint {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .endpoint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .endpoint-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: white;
+        }
+
+        .method.get {
+            background: #28a745;
+        }
+
+        .method.post {
+            background: #007bff;
+        }
+
+        .method.put {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .method.delete {
+            background: #dc3545;
+        }
+
+        .endpoint-url {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .response {
+            margin-top: 10px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            display: none;
+        }
+
+        .response.show {
+            display: block;
+        }
+
+        .response pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.85em;
+            color: #333;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .info-box strong {
+            color: #2196F3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 HRMS API Tester</h1>
+            <p>Test all backend endpoints with one click</p>
+        </div>
+        <div class="content">
+            <div class="info-box">
+                <strong>📌 Default Credentials:</strong> admin@hrms.com / admin123<br>
+                <strong>🌐 Base URL:</strong> http://localhost/hrms-backend/api
+            </div>
+
+            <!-- Authentication -->
+            <div class="endpoint-group">
+                <h2>🔐 Authentication</h2>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="endpoint-name">Login</span>
+                        <span class="method post">POST</span>
+                    </div>
+                    <div class="endpoint-url">/auth/login.php</div>
+                    <button onclick="testLogin()">Test Login</button>
+                    <div id="login-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="endpoint-name">Get Current User</span>
+                        <span class="method get">GET</span>
+                    </div>
+                    <div class="endpoint-url">/auth/me.php</div>
+                    <button onclick="testMe()">Test Me</button>
+                    <div id="me-response" class="response"></div>
+                </div>
+            </div>
+
+            <!-- Employees -->
+            <div class="endpoint-group">
+                <h2>👥 Employees</h2>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="endpoint-name">List Employees</span>
+                        <span class="method get">GET</span>
+                    </div>
+                    <div class="endpoint-url">/employees/list.php</div>
+                    <button onclick="testEmployeeList()">Test List</button>
+                    <div id="employee-list-response" class="response"></div>
+                </div>
+            </div>
+
+            <!-- Attendance -->
+            <div class="endpoint-group">
+                <h2>⏰ Attendance</h2>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="endpoint-name">Mark Attendance</span>
+                        <span class="method post">POST</span>
+                    </div>
+                    <div class="endpoint-url">/attendance/mark.php</div>
+                    <button onclick="testAttendanceMark()">Test Mark</button>
+                    <div id="attendance-mark-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="endpoint-name">Attendance History</span>
+                        <span class="method get">GET</span>
+                    </div>
+                    <div class="endpoint-url">/attendance/history.php</div>
+                    <button onclick="testAttendanceHistory()">Test History</button>
+                    <div id="attendance-history-response" class="response"></div>
+                </div>
+            </div>
+
+            <!-- Leave -->
+            <div class="endpoint-group">
+                <h2>🏖️ Leave Management</h2>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="endpoint-name">List Leaves</span>
+                        <span class="method get">GET</span>
+                    </div>
+                    <div class="endpoint-url">/leave/list.php</div>
+                    <button onclick="testLeaveList()">Test List</button>
+                    <div id="leave-list-response" class="response"></div>
+                </div>
+            </div>
+
+            <!-- Salary -->
+            <div class="endpoint-group">
+                <h2>💰 Salary</h2>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="endpoint-name">View Salary</span>
+                        <span class="method get">GET</span>
+                    </div>
+                    <div class="endpoint-url">/salary/view.php</div>
+                    <button onclick="testSalaryView()">Test View</button>
+                    <div id="salary-view-response" class="response"></div>
+                </div>
+            </div>
+
+            <!-- Dashboard -->
+            <div class="endpoint-group">
+                <h2>📊 Dashboard</h2>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="endpoint-name">Dashboard Stats</span>
+                        <span class="method get">GET</span>
+                    </div>
+                    <div class="endpoint-url">/dashboard/stats.php</div>
+                    <button onclick="testDashboardStats()">Test Stats</button>
+                    <div id="dashboard-stats-response" class="response"></div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="endpoint-name">Team Status</span>
+                        <span class="method get">GET</span>
+                    </div>
+                    <div class="endpoint-url">/dashboard/team.php</div>
+                    <button onclick="testDashboardTeam()">Test Team</button>
+                    <div id="dashboard-team-response" class="response"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost/hrms-backend/api';
+        let userId = 1;
+
+        function showResponse(elementId, data, status) {
+            const element = document.getElementById(elementId);
+            const statusClass = status >= 200 && status < 300 ? 'success' : 'error';
+            element.innerHTML = `
+                <span class="status ${statusClass}">Status: ${status}</span>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+            element.classList.add('show');
+        }
+
+        async function testLogin() {
+            try {
+                const response = await fetch(`${BASE_URL}/auth/login.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        email: 'admin@hrms.com',
+                        password: 'admin123'
+                    })
+                });
+                const data = await response.json();
+                if (data.user) userId = data.user.id;
+                showResponse('login-response', data, response.status);
+            } catch (error) {
+                showResponse('login-response', { error: error.message }, 500);
+            }
+        }
+
+        async function testMe() {
+            try {
+                const response = await fetch(`${BASE_URL}/auth/me.php`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                showResponse('me-response', data, response.status);
+            } catch (error) {
+                showResponse('me-response', { error: error.message }, 500);
+            }
+        }
+
+        async function testEmployeeList() {
+            try {
+                const response = await fetch(`${BASE_URL}/employees/list.php`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                showResponse('employee-list-response', data, response.status);
+            } catch (error) {
+                showResponse('employee-list-response', { error: error.message }, 500);
+            }
+        }
+
+        async function testAttendanceMark() {
+            try {
+                const response = await fetch(`${BASE_URL}/attendance/mark.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ user_id: userId })
+                });
+                const data = await response.json();
+                showResponse('attendance-mark-response', data, response.status);
+            } catch (error) {
+                showResponse('attendance-mark-response', { error: error.message }, 500);
+            }
+        }
+
+        async function testAttendanceHistory() {
+            try {
+                const response = await fetch(`${BASE_URL}/attendance/history.php?user_id=${userId}&role=Admin`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                showResponse('attendance-history-response', data, response.status);
+            } catch (error) {
+                showResponse('attendance-history-response', { error: error.message }, 500);
+            }
+        }
+
+        async function testLeaveList() {
+            try {
+                const response = await fetch(`${BASE_URL}/leave/list.php?user_id=${userId}&role=Admin`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                showResponse('leave-list-response', data, response.status);
+            } catch (error) {
+                showResponse('leave-list-response', { error: error.message }, 500);
+            }
+        }
+
+        async function testSalaryView() {
+            try {
+                const response = await fetch(`${BASE_URL}/salary/view.php?user_id=${userId}&role=Admin`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                showResponse('salary-view-response', data, response.status);
+            } catch (error) {
+                showResponse('salary-view-response', { error: error.message }, 500);
+            }
+        }
+
+        async function testDashboardStats() {
+            try {
+                const response = await fetch(`${BASE_URL}/dashboard/stats.php`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                showResponse('dashboard-stats-response', data, response.status);
+            } catch (error) {
+                showResponse('dashboard-stats-response', { error: error.message }, 500);
+            }
+        }
+
+        async function testDashboardTeam() {
+            try {
+                const response = await fetch(`${BASE_URL}/dashboard/team.php`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                showResponse('dashboard-team-response', data, response.status);
+            } catch (error) {
+                showResponse('dashboard-team-response', { error: error.message }, 500);
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
 import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import EmployeeDashboard from "./pages/EmployeeDashboard";
 import Dashboard from "./pages/Dashboard";
 import Attendance from "./pages/Attendance";
 import TimeOff from "./pages/TimeOff";
@@ -20,6 +22,10 @@ function App() {
 
         {/* Authentication */}
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+
+        {/* Employee Dashboard */}
+        <Route path="/employees" element={<EmployeeDashboard />} />
 
         {/* Protected ERP Layout */}
         <Route element={<MainLayout />}>

@@ -1,7 +1,17 @@
 <?php
+session_start();
 include_once '../../config/database.php';
-header("Access-Control-Allow-Origin: *");
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 $database = new Database();
 $db = $database->getConnection();
@@ -9,7 +19,7 @@ $db = $database->getConnection();
 $role = isset($_GET['role']) ? $_GET['role'] : 'Employee';
 $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : null;
 
-if($role === 'Admin' || $role === 'HR') {
+if ($role === 'Admin' || $role === 'HR') {
     // See all
     $query = "SELECT l.*, e.first_name, e.last_name, e.employee_code 
               FROM leave_requests l 
@@ -30,7 +40,7 @@ $stmt->execute();
 $leaves_arr = array();
 $leaves_arr["records"] = array(); // wrapping for standard structure
 
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     array_push($leaves_arr["records"], $row);
 }
 

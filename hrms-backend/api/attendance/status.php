@@ -1,7 +1,17 @@
 <?php
+session_start();
 include_once '../../config/database.php';
-header("Access-Control-Allow-Origin: *");
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 $database = new Database();
 $db = $database->getConnection();
@@ -19,7 +29,7 @@ $today = date('Y-m-d');
 $stmt->bindParam(":date", $today);
 $stmt->execute();
 
-if($stmt->rowCount() > 0) {
+if ($stmt->rowCount() > 0) {
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     echo json_encode($row);
 } else {

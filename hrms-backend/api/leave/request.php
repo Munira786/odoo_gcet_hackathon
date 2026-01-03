@@ -1,16 +1,24 @@
 <?php
+session_start();
 include_once '../../config/database.php';
-header("Access-Control-Allow-Origin: *");
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 $database = new Database();
 $db = $database->getConnection();
 
 $data = json_decode(file_get_contents("php://input"));
 
-if(!isset($data->user_id) || !isset($data->leave_type) || !isset($data->start_date)) {
+if (!isset($data->user_id) || !isset($data->leave_type) || !isset($data->start_date)) {
     http_response_code(400);
     echo json_encode(["message" => "Incomplete data."]);
     exit();
@@ -23,7 +31,7 @@ $stmt_emp->bindParam(":uid", $data->user_id);
 $stmt_emp->execute();
 $emp = $stmt_emp->fetch(PDO::FETCH_ASSOC);
 
-if(!$emp) {
+if (!$emp) {
     http_response_code(404);
     echo json_encode(["message" => "Employee not found."]);
     exit();
@@ -39,7 +47,7 @@ $stmt->bindParam(":start", $data->start_date);
 $stmt->bindParam(":end", $data->end_date);
 $stmt->bindParam(":reason", $data->reason);
 
-if($stmt->execute()) {
+if ($stmt->execute()) {
     echo json_encode(["message" => "Leave request submitted."]);
 } else {
     http_response_code(503);
